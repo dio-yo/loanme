@@ -1,6 +1,6 @@
 {
-  "homepage": "http://dio-yo.github.io/loanme.github.io",
-  "name": "loanme.github.io",
+  "homepage": "http://dio-yo.github.io/loanme",
+  "name": "loanme",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
