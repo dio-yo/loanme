@@ -69,7 +69,6 @@ function ShowUsers(props) {
         props.updateTotals(_totals);
         axios.delete(`${apiURl}/users/${selected._id}`,)
             .then(function (response) {
-                console.log(response);
                 props.populateUsers()
             })
             .catch(function (error) {
@@ -82,14 +81,12 @@ function ShowUsers(props) {
     const handleNameChange = (e) => {
         let _userData = { ...userData };
         _userData.name = e.target.value;
-        console.log('_userData', _userData);
         setUserData(_userData);
     }
 
     const handleAmountChange = (e) => {
         let _userData = { ...userData };
         _userData.amount = e.target.value;
-        console.log('_userData', _userData);
         setUserData(_userData);
     }
 
@@ -99,7 +96,6 @@ function ShowUsers(props) {
         props.updateTotals(_totals);
         axios.post(`${apiURl}/users`, userData)
             .then(function (response) {
-                console.log(response);
                 props.populateUsers()
             })
             .catch(function (error) {
@@ -120,7 +116,6 @@ function ShowUsers(props) {
         props.updateTotals(_totals);
         axios.put(`${apiURl}/users/${selected._id}`, data)
             .then(function (response) {
-                console.log(response);
                 props.populateUsers()
             })
             .catch(function (error) {

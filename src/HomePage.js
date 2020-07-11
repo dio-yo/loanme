@@ -34,7 +34,7 @@ function TabPanel(props) {
 }
 
 function HomePage() {
-    const [tabs, setTabs] = React.useState(1);
+    const [tabs, setTabs] = React.useState(0);
     const [users, setUsers] = React.useState([]);
     const [loans, setloans] = React.useState([]);
     const [totals, setTotals] = React.useState({ total_deposit: 0, loan: 0, interest_earned: 0 });
@@ -64,7 +64,6 @@ function HomePage() {
     const populateUsers = () => {
         axios.get(`${apiURl}/users`)
             .then(function (res) {
-                console.log(res);
                 setUsers(res.data)
             })
             .catch(function (error) {
@@ -76,7 +75,6 @@ function HomePage() {
     const populateLoans = () => {
         axios.get(`${apiURl}/loans`)
             .then(function (res) {
-                console.log(res);
                 setloans(res.data)
             })
             .catch(function (error) {
@@ -88,7 +86,6 @@ function HomePage() {
     const populateTotals = () => {
         axios.get(`${apiURl}/totals`)
             .then(function (res) {
-                console.log(res);
                 if (res.data.length > 0) {
                     setTotals(res.data[0])
                 } else {
@@ -102,10 +99,8 @@ function HomePage() {
     }
 
     const updateTotals = (data) => {
-        console.log('updateTotals', data);
         axios.post(`${apiURl}/totals`, data)
             .then(function (res) {
-                console.log(res);
                 populateTotals();
             })
             .catch(function (error) {
@@ -119,7 +114,7 @@ function HomePage() {
         populateUsers();
         populateLoans();
     }, []);
-    console.log('totals', totals);
+
     return (
         <div className="HomePage">
             <CssBaseline />

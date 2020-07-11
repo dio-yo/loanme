@@ -117,10 +117,6 @@ function ShowUsers(props) {
         let _data = { ...selected };
         _data.amountPaidBack = amountPaidBack;
         let _totals = { ...props.totals };
-        console.log('_totals.interest_earned', _totals.interest_earned);
-        console.log('Number(_totals.interest_earned)', Number(_totals.interest_earned));
-        console.log('Number(selected.amount)', Number(selected.amount));
-        console.log('Number(amountPaidBack)', Number(amountPaidBack));
         _totals.interest_earned = Number(_totals.interest_earned) +  Number(amountPaidBack) - Number(selected.amount);
         props.updateTotals(_totals);
         axios.delete(`${apiURl}/users/${selected._id}`)
