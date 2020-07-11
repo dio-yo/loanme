@@ -6,6 +6,8 @@ import TextField from "@material-ui/core/TextField";
 import TableBody from '@material-ui/core/TableBody';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
+import axios from 'axios';
+import { apiURl } from './utility';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
@@ -47,15 +49,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function createData(id, name, amount, interest, loanDate) {
-    return { id, name, amount, interest, loanDate };
-}
-
-const rows = [
-    createData(123, 'Dhrubesh', 123, 5, '12th Jan 2020'),
-    createData(223, 'Dio', 223, 2, '14th Jan 2020'),
-];
-
 function ShowUsers(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -64,11 +57,9 @@ function ShowUsers(props) {
     const [grantLoan, setGrantLoan] = React.useState(false);
     const [userData, setUserData] = React.useState({ name: null, amount: null, months: null, percentage: null });
     const handleClick = (id) => {
-        console.log('id', id);
-        let _selected = rows.find((row) => { if (row.id === id) { return row } });
+        let _selected = props.loans.find((row) => { if (row._id === id) { return row } });
         setSelected(_selected);
         // setAmountPaidBack(_selected.amount);
-        console.log('_selected', _selected);
         handleOpen();
     }
 
@@ -82,41 +73,65 @@ function ShowUsers(props) {
     const handleNameChange = (e) => {
         let _userData = { ...userData };
         _userData.name = e.target.value;
-        console.log('_userData', _userData);
         setUserData(_userData);
     }
 
     const handleMonthsChange = (e) => {
         let _userData = { ...userData };
         _userData.months = e.target.value;
-        console.log('_userData', _userData);
         setUserData(_userData);
     }
 
     const handlePercentageChange = (e) => {
         let _userData = { ...userData };
         _userData.percentage = e.target.value;
-        console.log('_userData', _userData);
         setUserData(_userData);
     }
 
     const handleAmountChange = (e) => {
         let _userData = { ...userData };
         _userData.amount = e.target.value;
-        console.log('_userData', _userData);
         setUserData(_userData);
     }
 
     const submitLoan = () => {
-        // do an api call here
+        let _userData = { ...userData };
+        let _date = new Date();
+        _userData.loanDate = `${_date.getDate()}-${_date.getMonth()}-${_date.getFullYear()}`;
+        _userData.amountPaidBack = 0;
+        let _totals = { ...props.totals };
+        _totals.loan = Number(_totals.loan) + Number(_userData.amount);
+        props.updateTotals(_totals);
+        axios.post(`${apiURl}/loans`, _userData)
+            .then(function (response) {
+                props.populateLoans()
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            });
         handleClose()
-        // call update api here
     }
 
     const handleLoanPaidBack = () => {
-        // do an api call here
+        let _data = { ...selected };
+        _data.amountPaidBack = amountPaidBack;
+        let _totals = { ...props.totals };
+        console.log('_totals.interest_earned', _totals.interest_earned);
+        console.log('Number(_totals.interest_earned)', Number(_totals.interest_earned));
+        console.log('Number(selected.amount)', Number(selected.amount));
+        console.log('Number(amountPaidBack)', Number(amountPaidBack));
+        _totals.interest_earned = Number(_totals.interest_earned) +  Number(amountPaidBack) - Number(selected.amount);
+        props.updateTotals(_totals);
+        axios.delete(`${apiURl}/users/${selected._id}`)
+            .then(function (response) {
+                props.populateLoans()
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            });
         handleClose()
-        // call update api here
     }
 
     const handleOnChange = (e) => {
@@ -142,32 +157,39 @@ function ShowUsers(props) {
     return (
         <div>
             <Button onClick={handleGrantLoan} className={classes.addBtn} variant="contained">Grant a loan</Button>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">Amount</TableCell>
-                            <TableCell align="right">Loan Taken on</TableCell>
-                            <TableCell align="right">Interest</TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.id} >
-                                <TableCell component="th" scope="row">
-                                    {row.name}
-                                </TableCell>
-                                <TableCell align="right">Rs {row.amount}</TableCell>
-                                <TableCell align="right">{row.loanDate}</TableCell>
-                                <TableCell align="right">{row.interest}%</TableCell>
-                                <TableCell align="right"><EditIcon className='icon' onClick={() => handleClick(row.id)} /></TableCell>
+            {
+                props.loans.length > 0 &&
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell align="right">Amount</TableCell>
+                                <TableCell align="right">Loan Taken on</TableCell>
+                                <TableCell align="right">Interest</TableCell>
+                                <TableCell align="right">Months</TableCell>
+                                <TableCell align="right">Actions</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {props.loans.map((row) => {
+                                return (
+                                    <TableRow key={row.id} >
+                                        <TableCell component="th" scope="row">
+                                            {row.name}
+                                        </TableCell>
+                                        <TableCell align="right">Rs {row.amount}</TableCell>
+                                        <TableCell align="right">{row.loanDate}</TableCell>
+                                        <TableCell align="right">{row.percentage}%</TableCell>
+                                        <TableCell align="right">{row.months}</TableCell>
+                                        <TableCell align="right"><EditIcon className='icon' onClick={() => handleClick(row._id)} /></TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            }
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -189,23 +211,23 @@ function ShowUsers(props) {
                                 Rs {selected.amount}
                             </span>
                                 <div className={classes.rowing}><b>Interest: </b><span>
-                                    {selected.interest} %
+                                    {selected.percentage} %
                             </span>
                                 </div>
                             </div>
                             <div className={classes.rowing}>
-                            <span><b>Amount Paid back:</b> Rs </span>
-                            <TextField
-                                className={classes.textField}
-                                type="number"
-                                onChange={handleOnChange}
-                                value={amountPaidBack}
+                                <span><b>Amount Paid back:</b> Rs </span>
+                                <TextField
+                                    className={classes.textField}
+                                    type="number"
+                                    onChange={handleOnChange}
+                                    value={amountPaidBack}
                                 />
                             </div>
                             <Button
-                            disabled={amountPaidBack === 0} 
-                            onClick={handleLoanPaidBack} color="primary" 
-                            className={classes.updateBtn} variant="contained">Load Paid back</Button>
+                                disabled={amountPaidBack <= selected.amount}
+                                onClick={handleLoanPaidBack} color="primary"
+                                className={classes.updateBtn} variant="contained">Loan Paid back</Button>
                         </>
                     }
                     {grantLoan &&

@@ -34,9 +34,15 @@ function TabPanel(props) {
 }
 
 function HomePage() {
-    const [tabs, setTabs] = React.useState(0);
+    const [tabs, setTabs] = React.useState(1);
     const [users, setUsers] = React.useState([]);
+    const [loans, setloans] = React.useState([]);
+    const [totals, setTotals] = React.useState({ total_deposit: 0, loan: 0, interest_earned: 0 });
     const useStyles = makeStyles((theme) => ({
+        info: {
+            display: 'flex',
+            justifyContent: 'space-around'
+        },
         root: {
             flexGrow: 1,
             backgroundColor: theme.palette.background.paper,
@@ -67,16 +73,65 @@ function HomePage() {
             })
     }
 
-    useEffect(() => {
-        populateUsers();
-    },[]);
+    const populateLoans = () => {
+        axios.get(`${apiURl}/loans`)
+            .then(function (res) {
+                console.log(res);
+                setloans(res.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            })
+    }
 
+    const populateTotals = () => {
+        axios.get(`${apiURl}/totals`)
+            .then(function (res) {
+                console.log(res);
+                if (res.data.length > 0) {
+                    setTotals(res.data[0])
+                } else {
+                    updateTotals(totals)
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            })
+    }
+
+    const updateTotals = (data) => {
+        console.log('updateTotals', data);
+        axios.post(`${apiURl}/totals`, data)
+            .then(function (res) {
+                console.log(res);
+                populateTotals();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            });
+    }
+
+    useEffect(() => {
+        populateTotals();
+        populateUsers();
+        populateLoans();
+    }, []);
+    console.log('totals', totals);
     return (
         <div className="HomePage">
             <CssBaseline />
             <Container maxWidth="65%">
                 <div className='container'>
                     <div className={classes.root}>
+                        <div className={classes.info}>
+                            <span><b>Total Deposit:</b> Rs {totals.total_deposit}</span>
+                            <span><b>Total Money lended:</b> Rs {totals.loan}</span>
+                            <span><b>Total Interest Earned:</b> Rs {totals.interest_earned}</span>
+                            <span><b>Total Money</b><i>(deposit + interest)</i>: Rs {Number(totals.interest_earned) + Number(totals.total_deposit)}</span>
+                        </div>
                         <AppBar color='transparent' position="static">
                             <Tabs value={tabs} onChange={handleChange} aria-label="simple tabs example">
                                 <Tab label="Users" {...a11yProps(0)} />
@@ -84,10 +139,16 @@ function HomePage() {
                             </Tabs>
                         </AppBar>
                         <TabPanel value={tabs} index={0}>
-                            <ShowUsers populateUsers={populateUsers} users={users} />
+                            <ShowUsers
+                                updateTotals={updateTotals}
+                                totals={totals}
+                                populateUsers={populateUsers} users={users} />
                         </TabPanel>
                         <TabPanel value={tabs} index={1}>
-                            <Loan />
+                            <Loan
+                                updateTotals={updateTotals}
+                                totals={totals}
+                                populateLoans={populateLoans} loans={loans} />
                         </TabPanel>
                     </div>
                 </div>

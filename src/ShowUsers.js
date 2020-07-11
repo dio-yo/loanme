@@ -57,25 +57,25 @@ function ShowUsers(props) {
     const [newUser, setNewUser] = React.useState(false);
     const [userData, setUserData] = React.useState({ name: null, amount: null });
     const handleClick = (id) => {
-        console.log('id', id);
         let _selected = props.users.find((row) => { if (row._id === id) { return row } });
         setSelected(_selected);
         setSelectedAmount(_selected.amount);
-        console.log('_selected', _selected);
         handleOpen();
     }
 
-
     const handleDelete = () => {
+        let _totals = { ...props.totals };
+        _totals.total_deposit = Number(_totals.total_deposit) - Number(selected.amount);
+        props.updateTotals(_totals);
         axios.delete(`${apiURl}/users/${selected._id}`,)
-        .then(function (response) {
-            console.log(response);
-            props.populateUsers()
-        })
-        .catch(function (error) {
-            console.log(error);
-            alert('Something went wrong')
-        });
+            .then(function (response) {
+                console.log(response);
+                props.populateUsers()
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            });
         handleClose();
     }
 
@@ -92,8 +92,11 @@ function ShowUsers(props) {
         console.log('_userData', _userData);
         setUserData(_userData);
     }
+
     const addUser = () => {
-        console.log('userData', userData);
+        let _totals = { ...props.totals };
+        _totals.total_deposit = Number(_totals.total_deposit) + Number(userData.amount);
+        props.updateTotals(_totals);
         axios.post(`${apiURl}/users`, userData)
             .then(function (response) {
                 console.log(response);
@@ -112,7 +115,9 @@ function ShowUsers(props) {
             name,
             amount: selectedAmount
         };
-        
+        let _totals = { ...props.totals };
+        _totals.total_deposit = Number(_totals.total_deposit) + Number(selectedAmount) - Number(selected.amount);
+        props.updateTotals(_totals);
         axios.put(`${apiURl}/users/${selected._id}`, data)
             .then(function (response) {
                 console.log(response);
