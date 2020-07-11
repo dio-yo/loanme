@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import Loan from './Loan';
 import Box from '@material-ui/core/Box';
 import ShowUsers from './ShowUsers';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -31,7 +32,7 @@ function TabPanel(props) {
 }
 
 function HomePage() {
-    const [tabs, setTabs] = React.useState(0);
+    const [tabs, setTabs] = React.useState(1);
     const useStyles = makeStyles((theme) => ({
         root: {
             flexGrow: 1,
@@ -64,10 +65,10 @@ function HomePage() {
                             </Tabs>
                         </AppBar>
                         <TabPanel value={tabs} index={0}>
-                            <ShowUsers/>
+                            <ShowUsers />
                         </TabPanel>
                         <TabPanel value={tabs} index={1}>
-                            Loan
+                            <Loan />
                         </TabPanel>
                     </div>
                 </div>
