@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/loanme.github.io/static/css/main.5f361e03.chunk.css",
-    "main.js": "/loanme.github.io/static/js/main.8bdd3508.chunk.js",
-    "main.js.map": "/loanme.github.io/static/js/main.8bdd3508.chunk.js.map",
-    "runtime-main.js": "/loanme.github.io/static/js/runtime-main.e65bf022.js",
-    "runtime-main.js.map": "/loanme.github.io/static/js/runtime-main.e65bf022.js.map",
-    "static/js/2.7270e7c7.chunk.js": "/loanme.github.io/static/js/2.7270e7c7.chunk.js",
-    "static/js/2.7270e7c7.chunk.js.map": "/loanme.github.io/static/js/2.7270e7c7.chunk.js.map",
-    "index.html": "/loanme.github.io/index.html",
-    "precache-manifest.e413c0d2a313dad9674ee10d704cf4bc.js": "/loanme.github.io/precache-manifest.e413c0d2a313dad9674ee10d704cf4bc.js",
-    "service-worker.js": "/loanme.github.io/service-worker.js",
-    "static/css/main.5f361e03.chunk.css.map": "/loanme.github.io/static/css/main.5f361e03.chunk.css.map",
-    "static/js/2.7270e7c7.chunk.js.LICENSE.txt": "/loanme.github.io/static/js/2.7270e7c7.chunk.js.LICENSE.txt",
-    "static/media/logo.svg": "/loanme.github.io/static/media/logo.5d5d9eef.svg"
+    "main.css": "/loanme/static/css/main.5f361e03.chunk.css",
+    "main.js": "/loanme/static/js/main.b08fe8c3.chunk.js",
+    "main.js.map": "/loanme/static/js/main.b08fe8c3.chunk.js.map",
+    "runtime-main.js": "/loanme/static/js/runtime-main.1632af76.js",
+    "runtime-main.js.map": "/loanme/static/js/runtime-main.1632af76.js.map",
+    "static/js/2.86ae5e9b.chunk.js": "/loanme/static/js/2.86ae5e9b.chunk.js",
+    "static/js/2.86ae5e9b.chunk.js.map": "/loanme/static/js/2.86ae5e9b.chunk.js.map",
+    "index.html": "/loanme/index.html",
+    "precache-manifest.8fb169169bb3b1c9dfbfafadfaed4b88.js": "/loanme/precache-manifest.8fb169169bb3b1c9dfbfafadfaed4b88.js",
+    "service-worker.js": "/loanme/service-worker.js",
+    "static/css/main.5f361e03.chunk.css.map": "/loanme/static/css/main.5f361e03.chunk.css.map",
+    "static/js/2.86ae5e9b.chunk.js.LICENSE.txt": "/loanme/static/js/2.86ae5e9b.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/loanme/static/media/logo.5d5d9eef.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.e65bf022.js",
-    "static/js/2.7270e7c7.chunk.js",
+    "static/js/runtime-main.1632af76.js",
+    "static/js/2.86ae5e9b.chunk.js",
     "static/css/main.5f361e03.chunk.css",
-    "static/js/main.8bdd3508.chunk.js"
+    "static/js/main.b08fe8c3.chunk.js"
   ]
 }
