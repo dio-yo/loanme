@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TextField from "@material-ui/core/TextField";
 import TableBody from '@material-ui/core/TableBody';
+import axios from 'axios';
+import { apiURl } from './utility';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import TableCell from '@material-ui/core/TableCell';
@@ -47,15 +49,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function createData(id, name, amount, joiningDate) {
-    return { id, name, amount, joiningDate };
-}
-
-const rows = [
-    createData(123, 'Dhrubesh', 159, '12th Jan 2020'),
-    createData(223, 'Dio', 237, '14th Jan 2020'),
-];
-
 function ShowUsers(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -65,7 +58,7 @@ function ShowUsers(props) {
     const [userData, setUserData] = React.useState({ name: null, amount: null });
     const handleClick = (id) => {
         console.log('id', id);
-        let _selected = rows.find((row) => { if (row.id === id) { return row } });
+        let _selected = props.users.find((row) => { if (row._id === id) { return row } });
         setSelected(_selected);
         setSelectedAmount(_selected.amount);
         console.log('_selected', _selected);
@@ -74,9 +67,16 @@ function ShowUsers(props) {
 
 
     const handleDelete = () => {
-        // do an api call here
+        axios.delete(`${apiURl}/users/${selected._id}`,)
+        .then(function (response) {
+            console.log(response);
+            props.populateUsers()
+        })
+        .catch(function (error) {
+            console.log(error);
+            alert('Something went wrong')
+        });
         handleClose();
-        // call update api here
     }
 
     const handleNameChange = (e) => {
@@ -93,15 +93,36 @@ function ShowUsers(props) {
         setUserData(_userData);
     }
     const addUser = () => {
-        // do an api call here
+        console.log('userData', userData);
+        axios.post(`${apiURl}/users`, userData)
+            .then(function (response) {
+                console.log(response);
+                props.populateUsers()
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            });
         handleClose()
-        // call update api here
     }
 
     const handleUpdate = () => {
-        // do an api call here
+        const { name } = selected;
+        let data = {
+            name,
+            amount: selectedAmount
+        };
+        
+        axios.put(`${apiURl}/users/${selected._id}`, data)
+            .then(function (response) {
+                console.log(response);
+                props.populateUsers()
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            });
         handleClose()
-        // call update api here
     }
 
     const handleOnChange = (e) => {
@@ -127,30 +148,29 @@ function ShowUsers(props) {
     return (
         <div>
             <Button onClick={handleAddUser} className={classes.addBtn} variant="contained">Add user</Button>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">Amount</TableCell>
-                            <TableCell align="right">Joining Date</TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.id} >
-                                <TableCell component="th" scope="row">
-                                    {row.name}
-                                </TableCell>
-                                <TableCell align="right">Rs {row.amount}</TableCell>
-                                <TableCell align="right">{row.joiningDate}</TableCell>
-                                <TableCell align="right"><EditIcon className='icon' onClick={() => handleClick(row.id)} /></TableCell>
+            {props.users.length > 0 &&
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell align="right">Amount</TableCell>
+                                <TableCell align="right">Actions</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {props.users.map((row) => (
+                                <TableRow key={row.id} >
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">Rs {row.amount}</TableCell>
+                                    <TableCell align="right"><EditIcon className='icon' onClick={() => handleClick(row._id)} /></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>}
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -167,7 +187,6 @@ function ShowUsers(props) {
                     {!!selected &&
                         <>
                             <div className={classes.rowing}><b>Name: </b><span> {selected.name}</span></div>
-                            <div className={classes.rowing}><b>Joining Date: </b><span> {selected.joiningDate}</span></div>
                             <div className={classes.rowing}><b>Amount: </b><span> Rs
                                 <TextField
                                     className={classes.textField}

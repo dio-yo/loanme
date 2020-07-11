@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -6,6 +6,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Loan from './Loan';
 import Box from '@material-ui/core/Box';
+import axios from 'axios';
+import { apiURl } from './utility';
 import ShowUsers from './ShowUsers';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
@@ -32,7 +34,8 @@ function TabPanel(props) {
 }
 
 function HomePage() {
-    const [tabs, setTabs] = React.useState(1);
+    const [tabs, setTabs] = React.useState(0);
+    const [users, setUsers] = React.useState([]);
     const useStyles = makeStyles((theme) => ({
         root: {
             flexGrow: 1,
@@ -52,6 +55,22 @@ function HomePage() {
         setTabs(newValue);
     };
 
+    const populateUsers = () => {
+        axios.get(`${apiURl}/users`)
+            .then(function (res) {
+                console.log(res);
+                setUsers(res.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert('Something went wrong')
+            })
+    }
+
+    useEffect(() => {
+        populateUsers();
+    },[]);
+
     return (
         <div className="HomePage">
             <CssBaseline />
@@ -65,7 +84,7 @@ function HomePage() {
                             </Tabs>
                         </AppBar>
                         <TabPanel value={tabs} index={0}>
-                            <ShowUsers />
+                            <ShowUsers populateUsers={populateUsers} users={users} />
                         </TabPanel>
                         <TabPanel value={tabs} index={1}>
                             <Loan />

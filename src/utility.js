@@ -70,3 +70,5 @@ export const checkPassword = (password) => {
         return false;
     }
 } 
+
+export const apiURl = `https://jsonbox.io/box_9da5c80ff8c9e6f9228b`
