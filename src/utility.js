@@ -63,7 +63,7 @@ const Base64 = {
 
 export const checkPassword = (password) => {
     let encodedVal = Base64.encode(password);
-    console.log('encodedVal', encodedVal); // 77871
+    console.log('encodedVal', encodedVal); 
     if (encodedVal === 'Nzc4NzE=') {
         return true;
     } else {
@@ -71,4 +71,4 @@ export const checkPassword = (password) => {
     }
 } 
 
-export const apiURl = `https://jsonbox.io/box_d2909fd9bae024b81584`;
+export const apiURl = `https://jsonbox.io/box_fea2aadc991c020ae53d`;
